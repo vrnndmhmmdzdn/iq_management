@@ -4,27 +4,34 @@ namespace App\Filament\Resources\Siswas;
 
 use App\Filament\Resources\Siswas\Pages;
 use App\Models\Siswa;
-use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\FileUpload;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\ImageEntry;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction ;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction ;
+use Filament\Actions\RestoreBulkAction ;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SiswaResource extends Resource
 {
@@ -81,11 +88,30 @@ class SiswaResource extends Resource
             ->filters([
                 SelectFilter::make('kelas_id')->label('Kelas')->relationship('kelas', 'nama_kelas'),
                 SelectFilter::make('status')->options(['aktif' => 'Aktif', 'nonaktif' => 'Nonaktif', 'lulus' => 'Lulus']),
+                TrashedFilter::make(),
             ])
-            ->recordActions([ViewAction::make(), EditAction::make(), DeleteAction::make()])
-            ->toolbarActions([BulkActionGroup::make([DeleteBulkAction::make()])])
+            ->recordActions([
+                ViewAction::make(), 
+                EditAction::make(), 
+                DeleteAction::make(),
+                ForceDeleteAction::make(),
+                RestoreAction::make(),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
+                    ])])
             ->defaultSort('nama_lengkap');
     }
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+{
+    return parent::getRecordRouteBindingEloquentQuery()
+        ->withoutGlobalScopes([
+            SoftDeletingScope::class,
+        ]);
+}
 
     public static function infolist(Schema $infolist): Schema
     {

@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\Siswas\Pages;
 
+use Filament\Actions;
 use App\Filament\Resources\Siswas\SiswaResource;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\ViewAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditSiswa extends EditRecord
@@ -14,8 +16,9 @@ class EditSiswa extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            ViewAction::make(),
-            DeleteAction::make(),
-        ];
+        DeleteAction::make(),
+        ForceDeleteAction::make(),
+        RestoreAction::make(),
+    ];
     }
 }
