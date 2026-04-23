@@ -126,6 +126,10 @@ class PembayaranSppResource extends Resource
         $count = static::getModel()::where('status', 'menunggu')->count();
         return $count > 0 ? (string) $count : null;
     }
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasRole('admin');
+    }
 
     public static function getNavigationBadgeColor(): ?string
     {

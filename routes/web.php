@@ -5,8 +5,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Guru\DashboardGuruController;
 use App\Http\Controllers\Ortu\DashboardOrtuController;
 use App\Http\Controllers\Ortu\PembayaranOrtuController;
+use App\Http\Controllers\Ortu\TugasOrtuController;
 
-Route::get('/', fn() => redirect('/admin'));
+Route::get('/', fn() => redirect('/login'));
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -26,9 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/bayar',  [PembayaranOrtuController::class, 'create'])->name('create');
             Route::post('/bayar', [PembayaranOrtuController::class, 'store'])->name('store');
         });
-
         Route::middleware('spp.gate')->group(function () {
-            // modul akademik di sini nanti
+            Route::get('/tugas', [TugasOrtuController::class, 'index'])->name('tugas.index');
+            Route::get('/tugas/{tugas}', [TugasOrtuController::class, 'show'])->name('tugas.show');
         });
     });
 
