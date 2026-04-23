@@ -2,26 +2,41 @@
 
 namespace App\Filament\Resources\Kelas\Schemas;
 
-use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Schema;
+use App\Models\User;
+use Filament\Forms;
+use Filament\Forms\Form;
 
 class KelasForm
 {
-    public static function configure(Schema $schema): Schema
+    public static function configure(Form $form): Form
     {
-        return $schema
-            ->components([
-                TextInput::make('nama_kelas')
-                    ->required(),
-                TextInput::make('tingkat')
+        return $form->schema([
+            Forms\Components\Section::make()->columns(2)->schema([
+                Forms\Components\TextInput::make('nama_kelas')
+                    ->label('Nama Kelas')
                     ->required()
-                    ->numeric(),
-                TextInput::make('wali_kelas_id')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('tahun_ajaran_id')
+                    ->placeholder('Contoh: Kelas 1A')
+                    ->maxLength(50),
+
+                Forms\Components\Select::make('tingkat')
+                    ->label('Tingkat')
                     ->required()
-                    ->numeric(),
-            ]);
+                    ->options(collect(range(1, 6))->mapWithKeys(fn($i) => [$i => "Kelas $i"])),
+
+                Forms\Components\Select::make('tahun_ajaran_id')
+                    ->label('Tahun Ajaran')
+                    ->relationship('tahunAjaran', 'nama')
+                    ->required()
+                    ->searchable()
+                    ->preload(),
+
+                Forms\Components\Select::make('wali_kelas_id')
+                    ->label('Wali Kelas')
+                    ->options(User::role('guru')->pluck('name', 'id'))
+                    ->searchable()
+                    ->nullable()
+                    ->placeholder('Pilih wali kelas'),
+            ]),
+        ]);
     }
 }

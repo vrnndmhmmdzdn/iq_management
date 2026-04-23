@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\Siswas\Tables;
 
+use Filament\Facades\Filament;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Filament\Actions\ViewAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
 
 class SiswasTable
 {
@@ -15,49 +17,77 @@ class SiswasTable
     {
         return $table
             ->columns([
-                TextColumn::make('nis')
-                    ->searchable(),
-                TextColumn::make('nisn')
-                    ->searchable(),
-                TextColumn::make('nama_lengkap')
-                    ->searchable(),
-                TextColumn::make('jenis_kelamin')
-                    ->badge(),
-                TextColumn::make('tempat_lahir')
-                    ->searchable(),
-                TextColumn::make('tanggal_lahir')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('foto')
-                    ->searchable(),
-                TextColumn::make('status')
-                    ->badge(),
-                TextColumn::make('kelas_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('tahun_ajaran_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
+                Tables\Columns\ImageColumn::make('foto')
+                    ->label('')
+                    ->circular()
+                    ->defaultImageUrl(fn($record) => 'https://ui-avatars.com/api/?name='.urlencode($record->nama_lengkap).'&color=3b82f6&background=dbeafe'),
+
+                Tables\Columns\TextColumn::make('nama_lengkap')
+                    ->label('Nama Siswa')
+                    ->searchable()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->description(fn($record) => 'NIS: '.$record->nis),
+
+                Tables\Columns\TextColumn::make('kelas.nama_kelas')
+                    ->label('Kelas')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->badge()
+                    ->color('info'),
+
+                Tables\Columns\TextColumn::make('jenis_kelamin')
+                    ->label('JK')
+                    ->formatStateUsing(fn($state) => $state === 'L' ? 'L' : 'P')
+                    ->badge()
+                    ->color(fn($state) => $state === 'L' ? 'info' : 'danger'),
+
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn($state) => match($state) {
+                        'aktif'    => 'success',
+                        'nonaktif' => 'gray',
+                        'lulus'    => 'info',
+                        default    => 'gray',
+                    }),
+
+                Tables\Columns\IconColumn::make('spp_lunas')
+                    ->label('SPP')
+                    ->getStateUsing(fn($record) => $record->isSppLunas())
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('kelas_id')
+                    ->label('Kelas')
+                    ->relationship('kelas', 'nama_kelas'),
+
+                Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        'aktif'    => 'Aktif',
+                        'nonaktif' => 'Nonaktif',
+                        'lulus'    => 'Lulus',
+                    ]),
+
+                Tables\Filters\SelectFilter::make('jenis_kelamin')
+                    ->label('Jenis Kelamin')
+                    ->options([
+                        'L' => 'Laki-laki',
+                        'P' => 'Perempuan',
+                    ]),
             ])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('nama_lengkap');
     }
 }

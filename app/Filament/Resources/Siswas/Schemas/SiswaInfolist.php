@@ -2,45 +2,56 @@
 
 namespace App\Filament\Resources\Siswas\Schemas;
 
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Schema;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 
 class SiswaInfolist
 {
-    public static function configure(Schema $schema): Schema
+    public static function configure(Infolist $infolist): Infolist
     {
-        return $schema
-            ->components([
-                TextEntry::make('nis'),
-                TextEntry::make('nisn')
-                    ->placeholder('-'),
-                TextEntry::make('nama_lengkap'),
-                TextEntry::make('jenis_kelamin')
-                    ->badge(),
-                TextEntry::make('tempat_lahir')
-                    ->placeholder('-'),
-                TextEntry::make('tanggal_lahir')
-                    ->date()
-                    ->placeholder('-'),
-                TextEntry::make('alamat')
-                    ->placeholder('-')
-                    ->columnSpanFull(),
-                TextEntry::make('foto')
-                    ->placeholder('-'),
-                TextEntry::make('status')
-                    ->badge(),
-                TextEntry::make('kelas_id')
-                    ->numeric()
-                    ->placeholder('-'),
-                TextEntry::make('tahun_ajaran_id')
-                    ->numeric()
-                    ->placeholder('-'),
-                TextEntry::make('created_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-            ]);
+        return $infolist->schema([
+            Infolists\Components\Section::make('Data Pribadi')
+                ->columns(2)
+                ->schema([
+                    Infolists\Components\ImageEntry::make('foto')
+                        ->label('')
+                        ->circular()
+                        ->defaultImageUrl(fn($record) => 'https://ui-avatars.com/api/?name='.urlencode($record->nama_lengkap).'&color=3b82f6&background=dbeafe')
+                        ->columnSpanFull(),
+
+                    Infolists\Components\TextEntry::make('nama_lengkap')->label('Nama Lengkap'),
+                    Infolists\Components\TextEntry::make('nis')->label('NIS'),
+                    Infolists\Components\TextEntry::make('nisn')->label('NISN')->default('-'),
+                    Infolists\Components\TextEntry::make('jenis_kelamin')
+                        ->label('Jenis Kelamin')
+                        ->formatStateUsing(fn($state) => $state === 'L' ? 'Laki-laki' : 'Perempuan'),
+                    Infolists\Components\TextEntry::make('tempat_lahir')->label('Tempat Lahir')->default('-'),
+                    Infolists\Components\TextEntry::make('tanggal_lahir')
+                        ->label('Tanggal Lahir')
+                        ->date('d M Y')
+                        ->default('-'),
+                    Infolists\Components\TextEntry::make('alamat')->label('Alamat')->default('-')->columnSpanFull(),
+                ]),
+
+            Infolists\Components\Section::make('Data Sekolah')
+                ->columns(2)
+                ->schema([
+                    Infolists\Components\TextEntry::make('kelas.nama_kelas')->label('Kelas')->default('-'),
+                    Infolists\Components\TextEntry::make('tahunAjaran.nama')->label('Tahun Ajaran')->default('-'),
+                    Infolists\Components\TextEntry::make('status')
+                        ->label('Status')
+                        ->badge()
+                        ->color(fn($state) => match($state) {
+                            'aktif'    => 'success',
+                            'nonaktif' => 'gray',
+                            'lulus'    => 'info',
+                            default    => 'gray',
+                        }),
+                    Infolists\Components\IconEntry::make('spp_lunas')
+                        ->label('SPP Bulan Ini')
+                        ->getStateUsing(fn($record) => $record->isSppLunas())
+                        ->boolean(),
+                ]),
+        ]);
     }
 }

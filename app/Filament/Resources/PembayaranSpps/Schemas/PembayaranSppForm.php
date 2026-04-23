@@ -2,45 +2,46 @@
 
 namespace App\Filament\Resources\PembayaranSpps\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Schema;
+use Filament\Forms;
+use Filament\Forms\Form;
 
 class PembayaranSppForm
 {
-    public static function configure(Schema $schema): Schema
+    public static function configure(Form $form): Form
     {
-        return $schema
-            ->components([
-                TextInput::make('siswa_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('periode')
+        return $form->schema([
+            Forms\Components\Section::make()->columns(2)->schema([
+                Forms\Components\Select::make('siswa_id')
+                    ->label('Siswa')
+                    ->relationship('siswa', 'nama_lengkap')
+                    ->searchable()
+                    ->preload()
                     ->required(),
-                TextInput::make('nominal')
+
+                Forms\Components\TextInput::make('periode')
+                    ->label('Periode (YYYY-MM)')
                     ->required()
-                    ->numeric(),
-                TextInput::make('bukti_pembayaran')
-                    ->required(),
-                Textarea::make('catatan_ortu')
-                    ->default(null)
-                    ->columnSpanFull(),
-                Textarea::make('catatan_admin')
-                    ->default(null)
-                    ->columnSpanFull(),
-                Select::make('status')
-                    ->options(['menunggu' => 'Menunggu', 'dikonfirmasi' => 'Dikonfirmasi', 'ditolak' => 'Ditolak'])
-                    ->default('menunggu')
-                    ->required(),
-                TextInput::make('dikonfirmasi_oleh')
+                    ->placeholder('2025-01'),
+
+                Forms\Components\TextInput::make('nominal')
+                    ->label('Nominal')
+                    ->required()
                     ->numeric()
-                    ->default(null),
-                DateTimePicker::make('dikonfirmasi_at'),
-            ]);
+                    ->prefix('Rp'),
+
+                Forms\Components\Select::make('status')
+                    ->label('Status')
+                    ->options([
+                        'menunggu'     => 'Menunggu',
+                        'dikonfirmasi' => 'Dikonfirmasi',
+                        'ditolak'      => 'Ditolak',
+                    ])
+                    ->required(),
+
+                Forms\Components\Textarea::make('catatan_admin')
+                    ->label('Catatan Admin')
+                    ->columnSpanFull(),
+            ]),
+        ]);
     }
 }
