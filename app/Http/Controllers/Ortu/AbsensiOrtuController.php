@@ -18,7 +18,7 @@ class AbsensiOrtuController extends Controller
             abort(403, 'Data siswa tidak ditemukan.');
         }
 
-        $bulan  = $request->get('bulan', now()->format('Y-m'));
+        $bulan = $request->get('bulan', now()->format('Y-m'));
         [$year, $month] = explode('-', $bulan);
 
         $absensis = Absensi::where('siswa_id', $siswa->id)
@@ -32,7 +32,6 @@ class AbsensiOrtuController extends Controller
             'izin'  => $absensis->where('status', 'izin')->count(),
             'sakit' => $absensis->where('status', 'sakit')->count(),
             'alfa'  => $absensis->where('status', 'alfa')->count(),
-            'total' => $absensis->count(),
         ];
 
         return view('ortu.absensi.index', compact('siswa', 'absensis', 'rekap', 'bulan'));

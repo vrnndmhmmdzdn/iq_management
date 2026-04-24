@@ -22,9 +22,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ── ORANG TUA ─────────────────────────────────────────
     Route::prefix('ortu')->name('ortu.')->middleware('role:ortu')->group(function () {
         Route::get('/dashboard', [DashboardOrtuController::class, 'index'])->name('dashboard');
-
-        Route::get('/ortu/absensi', [AbsensiOrtuController::class, 'index'])
-        ->name('ortu.absensi.index');
+        Route::get('/absensi', [AbsensiOrtuController::class, 'index'])->name('absensi.index');
+         
         Route::prefix('spp')->name('spp.')->group(function () {
             Route::get('/',       [PembayaranOrtuController::class, 'index'])->name('index');
             Route::get('/bayar',  [PembayaranOrtuController::class, 'create'])->name('create');

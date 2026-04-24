@@ -53,4 +53,5 @@ class Siswa extends Model
     {
         return $this->hasMany(Absensi::class);
     }
+    
 }
