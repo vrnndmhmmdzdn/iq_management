@@ -86,6 +86,13 @@
             Dashboard
         </a>
 
+        <a href="{{ route('ortu.absensi.index') }}" 
+            class="{{ request()->routeIs('ortu.absensi.*') ? 'bg-primary-50 text-primary-700' : 'text-gray-600 hover:bg-gray-50' }} 
+            flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+            {{-- icon absensi --}}
+            📅 Absensi Harian
+        </a>
+
         <a href="{{ route('ortu.spp.index') }}"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {{ request()->routeIs('ortu.spp*') ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700' }}">

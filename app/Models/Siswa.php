@@ -25,6 +25,7 @@ class Siswa extends Model
         return $this->belongsTo(Kelas::class);
     }
 
+
     public function tahunAjaran()
     {
         return $this->belongsTo(TahunAjaran::class);
@@ -47,5 +48,9 @@ class Siswa extends Model
             ->where('periode', $bulanIni)
             ->where('status', 'dikonfirmasi')
             ->exists();
+    }
+    public function absensis()
+    {
+        return $this->hasMany(Absensi::class);
     }
 }

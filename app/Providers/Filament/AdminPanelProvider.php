@@ -14,6 +14,7 @@ use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
@@ -24,7 +25,7 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            // ->default()
+            ->default()
             ->id('admin')
             ->path('admin')
             ->login()
@@ -37,6 +38,8 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
+            ->sidebarCollapsibleOnDesktop()
+            ->spa()
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
@@ -47,7 +50,7 @@ class AdminPanelProvider extends PanelProvider
                 StartSession::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
-                PreventRequestForgery::class,
+                VerifyCsrfToken::class,
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
