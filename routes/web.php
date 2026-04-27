@@ -1,12 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Guru\DashboardGuruController;
+use App\Http\Controllers\Ortu\AbsensiOrtuController;
 use App\Http\Controllers\Ortu\DashboardOrtuController;
+use App\Http\Controllers\Ortu\NilaiOrtuController;
 use App\Http\Controllers\Ortu\PembayaranOrtuController;
 use App\Http\Controllers\Ortu\TugasOrtuController;
-use App\Http\Controllers\Ortu\AbsensiOrtuController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn() => redirect('/login'));
 
@@ -32,6 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::middleware('spp.gate')->group(function () {
             Route::get('/tugas', [TugasOrtuController::class, 'index'])->name('tugas.index');
             Route::get('/tugas/{tugas}', [TugasOrtuController::class, 'show'])->name('tugas.show');
+            Route::get('/nilai', [NilaiOrtuController::class, 'index'])->name('nilai.index');
         });
     });
 

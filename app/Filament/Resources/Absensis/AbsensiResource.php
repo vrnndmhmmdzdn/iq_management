@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Absensis;
 
 use App\Filament\Resources\Absensis\Pages\CreateAbsensi;
+use App\Filament\Resources\Absensis\Pages\DetailAbsensiKelas;
 use App\Filament\Resources\Absensis\Pages\EditAbsensi;
 use App\Filament\Resources\Absensis\Pages\ListAbsensis;
 use App\Filament\Resources\Absensis\Schemas\AbsensiForm;
@@ -62,6 +63,7 @@ class AbsensiResource extends Resource
             'index'  => ListAbsensis::route('/'),
             'create' => CreateAbsensi::route('/create'),
             'edit'   => EditAbsensi::route('/{record}/edit'),
+            'detail' => DetailAbsensiKelas::route('/{kelas}/{tanggal}'),
         ];
     }
 }

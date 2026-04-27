@@ -3,7 +3,10 @@
 namespace App\Filament\Resources\Users\Schemas;
 
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Form;
+use Filament\Schemas\Components\Section;
 use Spatie\Permission\Models\Role;
 
 class UserForm
@@ -11,19 +14,19 @@ class UserForm
     public static function configure(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make()->columns(2)->schema([
-                Forms\Components\TextInput::make('name')
+            Section::make()->columns(2)->schema([
+                TextInput::make('name')
                     ->label('Nama')
                     ->required()
                     ->maxLength(255),
 
-                Forms\Components\TextInput::make('email')
+                TextInput::make('email')
                     ->label('Email')
                     ->email()
                     ->required()
                     ->unique(ignoreRecord: true),
 
-                Forms\Components\TextInput::make('password')
+                TextInput::make('password')
                     ->label('Password')
                     ->password()
                     ->dehydrateStateUsing(fn($state) => bcrypt($state))
@@ -31,11 +34,11 @@ class UserForm
                     ->required(fn(string $context) => $context === 'create')
                     ->placeholder('Kosongkan jika tidak ingin mengubah'),
 
-                Forms\Components\Select::make('roles')
+                Select::make('roles')
                     ->label('Role')
                     ->relationship('roles', 'name')
                     ->options(Role::pluck('name', 'id'))
-                    ->preload()
+                    // ->preload()
                     ->required(),
             ]),
         ]);

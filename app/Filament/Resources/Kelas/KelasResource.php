@@ -23,7 +23,7 @@ class KelasResource extends Resource
     protected static ?string $model = Kelas::class;
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-library';
     protected static ?string $navigationLabel = 'Data Kelas';
-    protected static string|\UnitEnum|null $navigationGroup = 'Akademik';
+    protected static string|\UnitEnum|null $navigationGroup = 'Master Data';
     protected static ?int $navigationSort = 2;
     protected static ?string $modelLabel = 'Kelas';
     protected static ?string $pluralModelLabel = 'Data Kelas';

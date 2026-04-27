@@ -22,6 +22,8 @@ class MataPelajaranResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'nama';
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Master Data';
+
     public static function form(Schema $schema): Schema
     {
         return MataPelajaranForm::configure($schema);

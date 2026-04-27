@@ -15,4 +15,8 @@ class MataPelajaran extends Model
     {
         return $this->hasMany(Tugas::class);
     }
+    public function guruMapel()
+    {
+        return $this->hasOne(GuruMapel::class);
+    }
 }

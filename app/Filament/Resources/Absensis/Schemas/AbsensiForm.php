@@ -16,7 +16,7 @@ class AbsensiForm
                 ->label('Siswa')
                 ->relationship('siswa', 'nama_lengkap')
                 ->searchable()
-                ->preload()
+                // ->preload()
                 ->required(),
             Select::make('kelas_id')
                 ->label('Kelas')

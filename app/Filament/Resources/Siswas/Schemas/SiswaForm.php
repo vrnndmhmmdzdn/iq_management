@@ -4,15 +4,14 @@ namespace App\Filament\Resources\Siswas\Schemas;
 
 // use Filament\Forms;
 // use Filament\Forms\Form;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\FileUpload;
-
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Form;
+use Filament\Schemas\Components\Section;
 
 
 class SiswaForm

@@ -2,12 +2,10 @@
 
 namespace App\Filament\Resources\Absensis\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class AbsensisTable
@@ -16,70 +14,48 @@ class AbsensisTable
     {
         return $table
             ->columns([
-                TextColumn::make('siswa.nama_lengkap')
-                    ->label('Nama Siswa')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('kelas.nama_kelas')
+                TextColumn::make('nama_kelas')
                     ->label('Kelas')
-                    ->sortable(),
-                TextColumn::make('tanggal')
-                    ->label('Tanggal')
-                    ->date('d M Y')
-                    ->sortable(),
-                TextColumn::make('status')
-                    ->label('Status')
                     ->badge()
-                    ->color(fn($state) => match($state) {
-                        'hadir' => 'success',
-                        'izin'  => 'warning',
-                        'sakit' => 'info',
-                        'alfa'  => 'danger',
-                        default => 'gray',
-                    })
-                    ->formatStateUsing(fn($state) => ucfirst($state)),
-                TextColumn::make('keterangan')
-                    ->label('Keterangan')
-                    ->default('-')
-                    ->limit(30),
-                TextColumn::make('pencatat.name')
-                    ->label('Dicatat Oleh')
+                    ->color('info')
+                    ->sortable(),
+                TextColumn::make('wali_kelas_nama')
+                    ->label('Wali Kelas')
                     ->default('-'),
+                TextColumn::make('jumlah_absen')
+                    ->label('Total Siswa')
+                    ->suffix(' siswa'),
+                TextColumn::make('jumlah_hadir')
+                    ->label('Hadir')
+                    ->badge()
+                    ->color('success'),
+                TextColumn::make('jumlah_izin')
+                    ->label('Izin')
+                    ->badge()
+                    ->color('warning'),
+                TextColumn::make('jumlah_sakit')
+                    ->label('Sakit')
+                    ->badge()
+                    ->color('info'),
+                TextColumn::make('jumlah_alfa')
+                    ->label('Alfa')
+                    ->badge()
+                    ->color('danger'),
             ])
-            ->filters([
-                SelectFilter::make('status')
-                    ->options([
-                        'hadir' => 'Hadir',
-                        'izin'  => 'Izin',
-                        'sakit' => 'Sakit',
-                        'alfa'  => 'Alfa',
-                    ]),
-                SelectFilter::make('kelas_id')
-                    ->label('Kelas')
-                    ->relationship('kelas', 'nama_kelas'),
-                SelectFilter::make('tanggal')
-                    ->label('Tanggal')
-                    ->form([
-                        DatePicker::make('from')->label('Dari'),
-                        DatePicker::make('to')->label('Sampai'),
-                    ])
-                    ->query(function ($query, $data) {
-                        if ($data['from']) {
-                            $query->whereDate('tanggal', '>=', $data['from']);
-                        }
-                        if ($data['to']) {
-                            $query->whereDate('tanggal', '<=', $data['to']);
-                        }
-                    }),
-            ])
+            ->recordUrl(fn($record) => \App\Filament\Resources\Absensis\AbsensiResource::getUrl('detail', [
+                'kelas'   => $record->kelas_id,
+                'tanggal' => is_string($record->tanggal)
+                    ? $record->tanggal
+                    : $record->tanggal->format('Y-m-d'),
+            ]))
             ->recordActions([
-                EditAction::make(),
+                
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('tanggal', 'desc');
+            ->defaultSort('nama_kelas');
     }
 }

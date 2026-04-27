@@ -23,7 +23,7 @@ class TahunAjaranResource extends Resource
     protected static ?string $model = TahunAjaran::class;
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar';
     protected static ?string $navigationLabel = 'Tahun Ajaran';
-    protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Master Data';
     protected static ?int $navigationSort = 1;
     protected static ?string $modelLabel = 'Tahun Ajaran';
 

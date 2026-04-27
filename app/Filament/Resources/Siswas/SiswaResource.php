@@ -38,7 +38,7 @@ class SiswaResource extends Resource
     protected static ?string $model = Siswa::class;
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationLabel = 'Data Siswa';
-    protected static string|\UnitEnum|null $navigationGroup = 'Akademik';
+    protected static string|\UnitEnum|null $navigationGroup = 'Master Data';
     protected static ?int $navigationSort = 1;
     protected static ?string $modelLabel = 'Siswa';
     protected static ?string $pluralModelLabel = 'Data Siswa';

@@ -40,4 +40,8 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasOne(OrangTua::class);
     }
+    public function guruMapels()
+    {
+        return $this->hasMany(GuruMapel::class, 'guru_id');
+    }
 }
