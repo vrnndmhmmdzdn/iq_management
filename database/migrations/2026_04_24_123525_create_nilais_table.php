@@ -15,6 +15,7 @@ return new class extends Migration
             $table->foreignId('mata_pelajaran_id')->constrained('mata_pelajarans')->cascadeOnDelete();
             $table->foreignId('tahun_ajaran_id')->constrained('tahun_ajarans')->cascadeOnDelete();
             $table->enum('jenis', ['harian', 'tugas', 'uts', 'uas']);
+            $table->date('tanggal_ujian')->nullable(); // tambah ini
             $table->decimal('nilai', 5, 2);
             $table->text('keterangan')->nullable();
             $table->foreignId('dicatat_oleh')->constrained('users')->cascadeOnDelete();

@@ -16,6 +16,7 @@ class NilaisTable
     {
         return $table
             ->columns([
+                
                 TextColumn::make('kelas.nama_kelas')
                     ->label('Kelas')
                     ->badge()
@@ -58,6 +59,10 @@ class NilaisTable
                 TextColumn::make('jumlah_siswa')
                     ->label('Jumlah Siswa')
                     ->suffix(' siswa'),
+                TextColumn::make('tanggal_ujian')
+                    ->label('Tanggal Ujian')
+                    ->date()
+                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('kelas_id')
@@ -79,16 +84,18 @@ class NilaisTable
                 'kelas'  => $record->kelas_id,
                 'mapel'  => $record->mata_pelajaran_id,
                 'jenis'  => $record->jenis,
+                'tanggal' => $record->tanggal_ujian,
             ]))
             ->recordActions([
-                Action::make('lihat_detail')
-                    ->label('Detail')
-                    ->icon('heroicon-o-eye')
-                    ->url(fn($record) => NilaiResource::getUrl('detail', [
-                        'kelas'  => $record->kelas_id,
-                        'mapel'  => $record->mata_pelajaran_id,
-                        'jenis'  => $record->jenis,
-                    ])),
+                // Action::make('lihat_detail')
+                //     ->label('Detail')
+                //     ->icon('heroicon-o-eye')
+                //     ->url(fn($record) => NilaiResource::getUrl('detail', [
+                //         'kelas'  => $record->kelas_id,
+                //         'mapel'  => $record->mata_pelajaran_id,
+                //         'jenis'  => $record->jenis,
+                //         'tanggal'  => $record->tanggal_ujian,
+                //     ])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

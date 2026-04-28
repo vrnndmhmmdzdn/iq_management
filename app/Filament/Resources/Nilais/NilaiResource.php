@@ -46,9 +46,9 @@ class NilaiResource extends Resource
     {
         return [
             'index'  => ListNilais::route('/'),
-            'view'         => ViewNilai::route('/{record}'),
+            'view'   => ViewNilai::route('/{record}'),
             'edit'   => EditNilai::route('/{record}/edit'),
-            'detail' => DetailNilaiKelas::route('/{kelas}/{mapel}/{jenis}'),
+            'detail' => DetailNilaiKelas::route('/{kelas}/{mapel}/{jenis}/{tanggal}'),
         ];
     }
 

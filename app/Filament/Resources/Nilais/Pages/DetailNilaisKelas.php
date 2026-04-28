@@ -20,12 +20,16 @@ class DetailNilaiKelas extends ListRecords
     public string $kelas = '';
     public string $mapel = '';
     public string $jenis = '';
+    // public string $tanggal = '';
+    public ?string $tanggal = null;
+
 
     public function mount(): void
     {
         $this->kelas = request()->route('kelas');
         $this->mapel = request()->route('mapel');
         $this->jenis = request()->route('jenis');
+        $this->tanggal = request()->route('tanggal');
     }
 
     public function getTitle(): string
@@ -53,6 +57,7 @@ class DetailNilaiKelas extends ListRecords
             ->where('kelas_id', $this->kelas)
             ->where('mata_pelajaran_id', $this->mapel)
             ->where('jenis', $this->jenis)
+            ->where('tanggal_ujian', $this->tanggal)
             ->with(['siswa', 'pencatat']);
     }
 

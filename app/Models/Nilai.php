@@ -9,7 +9,7 @@ class Nilai extends Model
     protected $fillable = [
         'siswa_id', 'kelas_id', 'mata_pelajaran_id',
         'tahun_ajaran_id', 'jenis', 'nilai',
-        'keterangan', 'dicatat_oleh',
+        'tanggal_ujian', 'keterangan', 'dicatat_oleh',
     ];
 
     protected $casts = [
