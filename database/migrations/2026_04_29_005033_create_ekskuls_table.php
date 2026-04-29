@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('guru_mapels', function (Blueprint $table) {
+        Schema::create('ekskuls', function (Blueprint $table) {
             $table->id();
+            $table->string('nama_ekskul');
+            $table->string('deskripsi');
+            $table->foreignId('pembina_id')->nullable()->constrained('gurus')->onDelete('cascade');
+            $table->boolean('is_aktif')->default(true);
             $table->timestamps();
         });
     }
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('guru_mapels');
+        Schema::dropIfExists('ekskuls');
     }
 };

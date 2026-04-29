@@ -11,10 +11,22 @@ return new class extends Migration {
             $table->id();
             $table->string('judul');
             $table->text('deskripsi');
-            $table->unsignedBigInteger('mata_pelajaran_id')->nullable();
-            // $table->foreignId('mata_pelajaran_id')->nullable()->constrained('mata_pelajarans')->nullOnDelete();
-            $table->foreignId('kelas_id')->nullable()->constrained('kelas')->nullOnDelete();
-            $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
+            
+            // Menggabungkan definisi kolom dan foreign key mata_pelajaran
+            $table->foreignId('mata_pelajaran_id')
+                ->nullable()
+                ->constrained('mata_pelajarans')
+                ->nullOnDelete();
+
+            $table->foreignId('kelas_id')
+                ->nullable()
+                ->constrained('kelas')
+                ->nullOnDelete();
+
+            $table->foreignId('created_by')
+                ->constrained('users')
+                ->cascadeOnDelete();
+
             $table->date('tanggal');
             $table->time('batas_waktu')->nullable();
             $table->string('file_lampiran')->nullable();

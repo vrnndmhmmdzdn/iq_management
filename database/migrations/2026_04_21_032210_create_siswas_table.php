@@ -25,11 +25,14 @@ return new class extends Migration
             $table->foreignId('kelas_id')->nullable()->constrained('kelas')->nullOnDelete();
             $table->foreignId('tahun_ajaran_id')->nullable()->constrained('tahun_ajarans')->nullOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('siswas');
+        Schema::table('siswas', function (Blueprint $table) {     
+            $table->dropSoftDeletes(); 
+        });
     }
 };
