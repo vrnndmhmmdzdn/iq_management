@@ -8,12 +8,13 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class PembayaranSppForm
 {
-    public static function configure(Form $form): Form
+    public static function configure(Schema $form): Schema
     {
-        return $form->schema([
+        return $form->components([
             Section::make()->columns(2)->schema([
                 Select::make('siswa_id')
                     ->label('Siswa')

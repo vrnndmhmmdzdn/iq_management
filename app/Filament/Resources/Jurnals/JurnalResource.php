@@ -81,7 +81,7 @@ class JurnalResource extends Resource
                 TextEntry::make('submitted_at')
                     ->label('Dikirim Pada')
                     ->dateTime('d M Y H:i')
-                    ->default('-'),
+                    ->placeholder('-'),
             ]),
 
             Section::make('Materi & Kegiatan')->schema([

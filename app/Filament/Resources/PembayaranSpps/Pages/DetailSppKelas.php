@@ -1,31 +1,50 @@
 <?php
 
-namespace App\Filament\Resources\PembayaranSpps\Tables;
+namespace App\Filament\Resources\PembayaranSpps\Pages;
 
+use App\Filament\Resources\PembayaranSpps\PembayaranSppResource;
+use App\Models\Kelas;
+use App\Models\PembayaranSpp;
+use App\Models\Siswa;
+use Carbon\Carbon;
 use Filament\Actions\Action;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Textarea;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\ListRecords;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
-class PembayaranSppsTable
+class DetailSppKelas extends ListRecords
 {
-    public static function configure(Table $table): Table
+    protected static string $resource = PembayaranSppResource::class;
+
+    public string $kelas   = '';
+    public string $periode = '';
+
+    public function mount(): void
+    {
+        $this->kelas   = request()->route('kelas');
+        $this->periode = request()->route('periode');
+    }
+
+    public function getTitle(): string
+    {
+        $kelas    = Kelas::find($this->kelas);
+        $periodeLabel = Carbon::createFromFormat('Y-m', $this->periode)
+            ->locale('id')->translatedFormat('F Y');
+        return "SPP {$kelas?->nama_kelas} — {$periodeLabel}";
+    }
+
+    public function table(Table $table): Table
     {
         return $table
+            ->query(fn() => $this->getTableQuery())
             ->columns([
                 TextColumn::make('siswa.nama_lengkap')
                     ->label('Nama Siswa')
                     ->searchable()
-                    ->sortable()
-                    ->description(fn($record) => $record->siswa?->kelas?->nama_kelas ?? '-'),
-                TextColumn::make('periode')
-                    ->label('Periode')
-                    ->formatStateUsing(fn($state) => \Carbon\Carbon::createFromFormat('Y-m', $state)
-                        ->locale('id')->translatedFormat('F Y')),
+                    ->sortable(),
                 TextColumn::make('nominal')
                     ->label('Nominal')
                     ->money('IDR'),
@@ -41,29 +60,22 @@ class PembayaranSppsTable
                     })
                     ->formatStateUsing(fn($state) => match($state) {
                         'belum_bayar'  => 'Belum Bayar',
-                        'menunggu'     => 'Menunggu',
+                        'menunggu'     => 'Menunggu Konfirmasi',
                         'dikonfirmasi' => 'Lunas',
                         'ditolak'      => 'Ditolak',
                         default        => '-',
                     }),
                 TextColumn::make('created_at')
-                    ->label('Dikirim')
+                    ->label('Tanggal Bayar')
                     ->dateTime('d M Y H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
-            ->filters([
-                SelectFilter::make('status')
-                    ->options([
-                        'belum_bayar'  => 'Belum Bayar',
-                        'menunggu'     => 'Menunggu',
-                        'dikonfirmasi' => 'Lunas',
-                        'ditolak'      => 'Ditolak',
-                    ]),
-            ])
+            ->recordUrl(fn($record) => $record->status !== 'belum_bayar'
+                ? PembayaranSppResource::getUrl('view', ['record' => $record])
+                : null
+            )
             ->recordActions([
-                ViewAction::make(),
-                Action::make('konfirmasi')
+                \Filament\Actions\Action::make('konfirmasi')
                     ->label('Konfirmasi')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
@@ -79,14 +91,15 @@ class PembayaranSppsTable
                         'dikonfirmasi_oleh' => auth()->id(),
                         'dikonfirmasi_at'   => now(),
                     ])),
-                Action::make('tolak')
+
+                \Filament\Actions\Action::make('tolak')
                     ->label('Tolak')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->visible(fn($record) => $record->status === 'menunggu')
                     ->requiresConfirmation()
                     ->form([
-                        Textarea::make('catatan_admin')->label('Alasan Penolakan')->required(),
+                        Textarea::make('catatan_admin')->label('Alasan')->required(),
                     ])
                     ->action(fn($record, array $data) => $record->update([
                         'status'            => 'ditolak',
@@ -95,9 +108,25 @@ class PembayaranSppsTable
                         'dikonfirmasi_at'   => now(),
                     ])),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([DeleteBulkAction::make()]),
-            ])
             ->defaultSort('siswa.nama_lengkap');
+    }
+
+    protected function getTableQuery(): Builder
+    {
+        return PembayaranSpp::query()
+            ->where('periode', $this->periode)
+            ->whereHas('siswa', fn($q) => $q->where('kelas_id', $this->kelas))
+            ->with(['siswa']);
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('kembali')
+                ->label('Kembali')
+                ->icon('heroicon-o-arrow-left')
+                ->color('gray')
+                ->url(PembayaranSppResource::getUrl('index')),
+        ];
     }
 }

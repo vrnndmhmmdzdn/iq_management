@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('alamat')->nullable();
             $table->string('foto')->nullable();
             $table->enum('status', ['aktif', 'nonaktif', 'lulus'])->default('aktif');
+            $table->bigInteger('nominal_spp')->default(0);
             $table->foreignId('kelas_id')->nullable()->constrained('kelas')->nullOnDelete();
             $table->foreignId('tahun_ajaran_id')->nullable()->constrained('tahun_ajarans')->nullOnDelete();
             $table->timestamps();

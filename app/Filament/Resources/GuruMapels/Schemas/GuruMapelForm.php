@@ -14,7 +14,7 @@ class GuruMapelForm
             Section::make()->columns(2)->schema([
                 Select::make('guru_id')
                     ->label('Guru')
-                    ->relationship('guru', 'name')
+                    ->relationship('guru', 'nama_lengkap')
                     ->searchable()
                     ->preload()
                     ->required(),

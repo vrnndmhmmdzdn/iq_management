@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Jadwals\Tables;
 
+use App\Filament\Resources\Jadwals\JadwalResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -16,30 +17,6 @@ class JadwalsTable
     {
         return $table
             ->columns([
-                TextColumn::make('hari')
-                    ->label('Hari')
-                    ->badge()
-                    ->formatStateUsing(fn($state) => match($state) {
-                        'senin'  => 'Senin',  'selasa' => 'Selasa',
-                        'rabu'   => 'Rabu',   'kamis'  => 'Kamis',
-                        'jumat'  => 'Jumat',  'sabtu'  => 'Sabtu',
-                        default  => '-',
-                    })
-                    ->color('info')
-                    ->sortable(),
-
-                TextColumn::make('jam_mulai')
-                    ->label('Jam')
-                    ->formatStateUsing(fn($state, $record) =>
-                        \Carbon\Carbon::parse($state)->format('H:i') . ' – ' .
-                        \Carbon\Carbon::parse($record->jam_selesai)->format('H:i')
-                    ),
-
-                TextColumn::make('guru.nama_lengkap')
-                    ->label('Guru')
-                    ->searchable()
-                    ->sortable(),
-
                 TextColumn::make('kelas.nama_kelas')
                     ->label('Kelas')
                     ->badge()
@@ -51,54 +28,61 @@ class JadwalsTable
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('guru.nama_lengkap')
+                    ->label('Guru')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('jam_mulai')
+                    ->label('Jam')
+                    ->formatStateUsing(fn($state, $record) =>
+                        \Carbon\Carbon::parse($state)->format('H:i') . ' – ' .
+                        \Carbon\Carbon::parse($record->jam_selesai)->format('H:i')
+                    ),
+
+                TextColumn::make('hari')
+                    ->label('Hari')
+                    ->badge()
+                    ->formatStateUsing(fn($state) => match($state) {
+                        'senin'  => 'Senin',  'selasa' => 'Selasa',
+                        'rabu'   => 'Rabu',   'kamis'  => 'Kamis',
+                        'jumat'  => 'Jumat',  'sabtu'  => 'Sabtu',
+                        default  => '-',
+                    })
+                    ->color('info')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('tahunAjaran.nama')
                     ->label('Tahun Ajaran')
                     ->badge()
                     ->color('gray')
                     ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->dateTime('d M Y H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('hari')
-                    ->label('Hari')
-                    ->options([
-                        'senin'  => 'Senin',  'selasa' => 'Selasa',
-                        'rabu'   => 'Rabu',   'kamis'  => 'Kamis',
-                        'jumat'  => 'Jumat',  'sabtu'  => 'Sabtu',
-                    ]),
+                SelectFilter::make('kelas_id')
+                    ->label('Kelas')
+                    ->options(fn() =>
+                        \App\Models\Kelas::orderBy('nama_kelas')->pluck('nama_kelas', 'id')
+                    ),
 
                 SelectFilter::make('guru_id')
                     ->label('Guru')
-                    ->options(
+                    ->options(fn() =>
                         \App\Models\Guru::where('status', 'aktif')
                             ->orderBy('nama_lengkap')
                             ->pluck('nama_lengkap', 'id')
                     ),
 
-                SelectFilter::make('kelas_id')
-                    ->label('Kelas')
-                    ->options(
-                        \App\Models\Kelas::orderBy('nama_kelas')
-                            ->pluck('nama_kelas', 'id')
-                    ),
-
                 SelectFilter::make('mata_pelajaran_id')
                     ->label('Mata Pelajaran')
-                    ->options(
-                        \App\Models\MataPelajaran::orderBy('nama')
-                            ->pluck('nama', 'id')
+                    ->options(fn() =>
+                        \App\Models\MataPelajaran::orderBy('nama')->pluck('nama', 'id')
                     ),
 
                 SelectFilter::make('tahun_ajaran_id')
                     ->label('Tahun Ajaran')
-                    ->options(
-                        \App\Models\TahunAjaran::orderByDesc('is_aktif')
-                            ->pluck('nama', 'id')
+                    ->options(fn() =>
+                        \App\Models\TahunAjaran::orderByDesc('is_aktif')->pluck('nama', 'id')
                     ),
             ])
             ->recordActions([
@@ -109,7 +93,7 @@ class JadwalsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ])
-            ->defaultSort('hari');
+            ]);
+            // ->defaultSort('jadwal_pelajarans.jam_mulai');
     }
 }

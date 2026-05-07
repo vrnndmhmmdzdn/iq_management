@@ -24,6 +24,7 @@ class ListNilais extends ListRecords
 {
     protected static string $resource = NilaiResource::class;
 
+    
     protected function getTableQuery(): Builder
     {
         return Nilai::query()

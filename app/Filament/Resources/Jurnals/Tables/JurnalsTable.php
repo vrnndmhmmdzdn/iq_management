@@ -120,7 +120,7 @@ class JurnalsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ])
-            ->defaultSort('tanggal', 'desc');
+            ]);
+            // ->defaultSort('tanggal', 'desc');
     }
 }

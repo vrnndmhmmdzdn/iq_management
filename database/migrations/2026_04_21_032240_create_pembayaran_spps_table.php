@@ -17,10 +17,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('periode'); // format: 2025-01
             $table->bigInteger('nominal');
-            $table->string('bukti_pembayaran');
+            $table->string('bukti_pembayaran')->nullable();
             $table->text('catatan_ortu')->nullable();
             $table->text('catatan_admin')->nullable();
-            $table->enum('status', ['menunggu', 'dikonfirmasi', 'ditolak'])->default('menunggu');
+            $table->enum('status', ['belum_bayar','menunggu', 'dikonfirmasi', 'ditolak'])->default('belum_bayar');
+            $table->boolean('is_tagihan')->default(false);
             $table->foreignId('dikonfirmasi_oleh')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('dikonfirmasi_at')->nullable();
             $table->timestamps();

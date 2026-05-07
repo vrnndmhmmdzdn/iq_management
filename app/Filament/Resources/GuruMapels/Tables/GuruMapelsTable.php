@@ -14,7 +14,7 @@ class GuruMapelsTable
     {
         return $table
             ->columns([
-                TextColumn::make('guru.name')
+                TextColumn::make('guru.nama_lengkap')
                     ->label('Nama Guru')
                     ->searchable()
                     ->sortable(),

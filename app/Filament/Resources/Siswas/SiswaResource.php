@@ -63,6 +63,7 @@ class SiswaResource extends Resource
             Section::make('Data Sekolah')->columns(2)->schema([
                 Select::make('kelas_id')->label('Kelas')->relationship('kelas', 'nama_kelas')->searchable()->preload(),
                 Select::make('tahun_ajaran_id')->label('Tahun Ajaran')->relationship('tahunAjaran', 'nama')->searchable()->preload(),
+                TextInput::make('nominal_spp')->label('Nominal SPP')->numeric()->prefix('Rp')->default(0)->required(),
                 FileUpload::make('foto')->label('Foto')->image()->directory('siswa/foto')->maxSize(2048)->columnSpanFull(),
             ]),
         ]);

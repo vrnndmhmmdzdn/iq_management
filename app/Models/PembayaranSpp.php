@@ -23,6 +23,7 @@ class PembayaranSpp extends Model
     const STATUS_MENUNGGU     = 'menunggu';
     const STATUS_DIKONFIRMASI = 'dikonfirmasi';
     const STATUS_DITOLAK      = 'ditolak';
+    const STATUS_BELUM_BAYAR  = 'belum_bayar';
 
     public function siswa()
     {

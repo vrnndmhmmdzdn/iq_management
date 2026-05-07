@@ -6,47 +6,63 @@ use App\Filament\Resources\Jadwals\JadwalResource;
 use App\Models\JadwalPelajaran;
 use App\Models\Kelas;
 use App\Models\TahunAjaran;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Schemas\Components\Tabs\Tab;
 
-class ListJadwals extends ListRecords
+class DetailJadwalKelas extends ListRecords
 {
     protected static string $resource = JadwalResource::class;
 
-    public function getTabs(): array
+    public string $kelasId = '';
+    public string $hari    = 'semua';
+
+    public function mount(): void
     {
-        $tahunAjaranId = TahunAjaran::aktif()?->id;
-
-        $kelasList = Kelas::whereHas('jadwals', fn($q) => $q
-            ->where('tahun_ajaran_id', $tahunAjaranId)
-        )->orderBy('tingkat')->orderBy('nama_kelas')->get();
-
-        $tabs = [
-            'all' => Tab::make('Semua Jadwal'), // Opsional: Tab untuk semua data
-        ];
-
-        foreach ($kelasList as $kelas) {
-            // Gunakan nama kelas sebagai key agar lebih rapi
-            $tabs[$kelas->id] = Tab::make($kelas->nama_kelas)
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('kelas_id', $kelas->id));
-        }
-
-        return $tabs;
+        $this->kelasId = request()->route('kelas');
+        $this->hari    = request()->route('hari', 'semua');
     }
 
+    public function getTitle(): string
+    {
+        $kelas = Kelas::find($this->kelasId);
+        return 'Jadwal — ' . ($kelas?->nama_kelas ?? '-');
+    }
+
+    public function getTabs(): array
+    {
+        return [
+            'semua'  => Tab::make('Semua'),
+            'senin'  => Tab::make('Senin'),
+            'selasa' => Tab::make('Selasa'),
+            'rabu'   => Tab::make('Rabu'),
+            'kamis'  => Tab::make('Kamis'),
+            'jumat'  => Tab::make('Jumat'),
+            'sabtu'  => Tab::make('Sabtu'),
+        ];
+    }
+
+    public function getDefaultActiveTab(): string
+    {
+        return $this->hari;
+    }
 
     protected function getTableQuery(): Builder
     {
         $tahunAjaranId = TahunAjaran::aktif()?->id;
+        $activeTab     = $this->activeTab ?? $this->hari;
 
         return JadwalPelajaran::query()
+            ->where('kelas_id', $this->kelasId)
             ->where('tahun_ajaran_id', $tahunAjaranId)
+            ->when($activeTab !== 'semua', fn($q) => $q->where('hari', $activeTab))
             ->with(['guru', 'mataPelajaran'])
-            ->orderByRaw("FIELD(hari, 'senin','selasa','rabu','kamis','jumat','sabtu'), jam_mulai");
+            ->orderByRaw("FIELD(hari, 'senin','selasa','rabu','kamis','jumat','sabtu')")
+            ->orderBy('jam_mulai');
     }
 
     public function table(Table $table): Table
@@ -99,6 +115,12 @@ class ListJadwals extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('kembali')
+                ->label('Kembali')
+                ->icon('heroicon-o-arrow-left')
+                ->color('gray')
+                ->url(JadwalResource::getUrl('index')),
+
             CreateAction::make()
                 ->label('Tambah Jadwal')
                 ->icon('heroicon-o-plus'),

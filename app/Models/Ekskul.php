@@ -19,6 +19,6 @@ class Ekskul extends Model
 
     public function pembina()
     {
-        return $this->belongsTo(Guru::class, 'pembina_id');
+        return $this->belongsTo(Guru::class );
     }
 }

@@ -6,6 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -15,7 +16,6 @@ use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -30,7 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->databaseNotifications()
-            ->databaseNotificationsPolling('30s')   
+            ->databaseNotificationsPolling('30s')
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -42,10 +42,27 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->sidebarCollapsibleOnDesktop()
             ->spa()
+            ->navigationGroups([
+                NavigationGroup::make('Master Data')
+                    ->icon('heroicon-o-circle-stack')
+                    ->collapsible(),
+                NavigationGroup::make('Akademik')
+                    ->icon('heroicon-o-academic-cap')
+                    ->collapsible(),
+                NavigationGroup::make('Keuangan')
+                    ->icon('heroicon-o-banknotes')
+                    ->collapsible(),
+                NavigationGroup::make('Pengaturan')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->collapsible(),
+            ])
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
+            ->spa()
+            // ->topNavigation()
+            ->sidebarcollapsibleOnDesktop()
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

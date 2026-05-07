@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Jadwals;
 
 use App\Filament\Resources\Jadwals\Pages\CreateJadwal;
+use App\Filament\Resources\Jadwals\Pages\DetailJadwalKelas;
 use App\Filament\Resources\Jadwals\Pages\EditJadwal;
 use App\Filament\Resources\Jadwals\Pages\ListJadwals;
 use App\Filament\Resources\Jadwals\Pages\ViewJadwal;
@@ -49,6 +50,7 @@ class JadwalResource extends Resource
             'create' => CreateJadwal::route('/create'),
             'view'   => ViewJadwal::route('/{record}'),
             'edit'   => EditJadwal::route('/{record}/edit'),
+            'detail' => DetailJadwalKelas::route('/{kelas}/{hari}'),
         ];
     }
 
@@ -93,4 +95,4 @@ class JadwalResource extends Resource
             ]),
         ]);
     }
-}
+}   

@@ -2,31 +2,35 @@
 
 namespace App\Filament\Resources\PembayaranSpps\Schemas;
 
-use Filament\Infolists;
-use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class PembayaranSppInfolist
 {
-    public static function configure(Infolist $infolist): Infolist
+    public static function configure(Schema $infolist): Schema
     {
-        return $infolist->schema([
-            Infolists\Components\Section::make('Info Siswa')->columns(2)->schema([
-                Infolists\Components\TextEntry::make('siswa.nama_lengkap')->label('Nama Siswa'),
-                Infolists\Components\TextEntry::make('siswa.nis')->label('NIS'),
-                Infolists\Components\TextEntry::make('siswa.kelas.nama_kelas')->label('Kelas')->default('-'),
-                Infolists\Components\TextEntry::make('user.name')->label('Diajukan Oleh'),
+        return $infolist->components([
+            Section::make('Info Siswa')->columns(2)->schema([
+                TextEntry::make('siswa.nama_lengkap')->label('Nama Siswa'),
+                TextEntry::make('siswa.nis')->label('NIS'),
+                TextEntry::make('siswa.kelas.nama_kelas')->label('Kelas')->default('-'),
+                TextEntry::make('user.name')->label('Diajukan Oleh'),
             ]),
 
-            Infolists\Components\Section::make('Detail Pembayaran')->columns(2)->schema([
-                Infolists\Components\TextEntry::make('periode')
+            Section::make('Detail Pembayaran')->columns(2)->schema([
+                TextEntry::make('periode')
                     ->label('Periode')
-                    ->formatStateUsing(fn($state) => \Carbon\Carbon::createFromFormat('Y-m', $state)->locale('id')->translatedFormat('F Y')),
+                    ->formatStateUsing(fn($state) => \Carbon\Carbon::createFromFormat('Y-m', $state)
+                        ->locale('id')
+                        ->translatedFormat('F Y')),
 
-                Infolists\Components\TextEntry::make('nominal')
+                TextEntry::make('nominal')
                     ->label('Nominal')
                     ->money('IDR'),
 
-                Infolists\Components\TextEntry::make('status')
+                TextEntry::make('status')
                     ->label('Status')
                     ->badge()
                     ->color(fn($state) => match($state) {
@@ -42,14 +46,14 @@ class PembayaranSppInfolist
                         default        => '-',
                     }),
 
-                Infolists\Components\TextEntry::make('catatan_ortu')->label('Catatan Ortu')->default('-'),
-                Infolists\Components\TextEntry::make('catatan_admin')->label('Catatan Admin')->default('-'),
-                Infolists\Components\TextEntry::make('dikonfirmasiOleh.name')->label('Dikonfirmasi Oleh')->default('-'),
-                Infolists\Components\TextEntry::make('dikonfirmasi_at')->label('Dikonfirmasi Pada')->dateTime('d M Y H:i')->default('-'),
+                TextEntry::make('catatan_ortu')->label('Catatan Ortu')->default('-'),
+                TextEntry::make('catatan_admin')->label('Catatan Admin')->default('-'),
+                TextEntry::make('dikonfirmasiOleh.name')->label('Dikonfirmasi Oleh')->default('-'),
+                TextEntry::make('dikonfirmasi_at')->label('Dikonfirmasi Pada')->dateTime('d M Y H:i')->default('-'),
             ]),
 
-            Infolists\Components\Section::make('Bukti Pembayaran')->schema([
-                Infolists\Components\ImageEntry::make('bukti_pembayaran')
+            Section::make('Bukti Pembayaran')->schema([
+                ImageEntry::make('bukti_pembayaran')
                     ->label('')
                     ->disk('public')
                     ->height(300),

@@ -19,7 +19,7 @@ class EkskulsTable
                     ->searchable(),
                 TextColumn::make('deskripsi')
                     ->searchable(),
-                TextColumn::make('pembina_id')
+                TextColumn::make('pembina.nama_lengkap')
                     ->label('Pembina')
                     ->numeric()
                     ->sortable(),

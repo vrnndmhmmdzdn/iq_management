@@ -13,7 +13,7 @@ class Siswa extends Model
     protected $fillable = [
         'nis', 'nisn', 'nama_lengkap', 'jenis_kelamin',
         'tempat_lahir', 'tanggal_lahir', 'alamat', 'foto',
-        'status', 'kelas_id', 'tahun_ajaran_id',
+        'status', 'nominal_spp', 'kelas_id', 'tahun_ajaran_id',
     ];
 
     protected $casts = [

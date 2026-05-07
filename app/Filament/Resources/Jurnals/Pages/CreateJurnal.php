@@ -14,8 +14,8 @@ class CreateJurnal extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['guru_id'] = auth()->user()->guru?->id;
-
-        if (! $guru) {
+        
+        if (!$data['guru_id']) {
         Notification::make()
             ->title('Data guru tidak ditemukan')
             ->body('Akun ini belum terdaftar sebagai guru. Hubungi admin.')
